@@ -1,10 +1,14 @@
-const { notLoggedIn } = require("../../middlewares/authMiddlewares");
-const loginController = require("../../controllers/authController/loginController");
-const signupController = require("../../controllers/authController/signupController");
+const { notLoggedIn } = require("../../../middlewares/authMiddlewares");
 const {
   loginReqRespValidator,
   loginReqValidator,
-} = require("../../validators/authValidators");
+} = require("../../../validators/authValidators");
+const {
+  loginController,
+  signupController,
+} = require("../../controllers/authController");
+
+
 module.exports = (fastify, _, done) => {
   fastify.addSchema(loginReqValidator);
   fastify.post(
