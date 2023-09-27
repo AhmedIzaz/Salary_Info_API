@@ -14,9 +14,11 @@ exports.signupController = async (req, reply) => {
     await db
       .promise()
       .query(
-        `INSERT INTO user (email, username, password, user_type, upper_level_user) VALUES ('${email}', '${username}','${hashedPassword}',${
-          user_type || null
-        },${upper_level_user || null})`
+        `INSERT INTO user (email, username, password, user_type, upper_level_user) VALUES ('${email}', '${
+          username || null
+        }','${hashedPassword}',${user_type || null},${
+          upper_level_user || null
+        })`
       );
     return reply.code(201).send("User created successfully");
   } catch (error) {
