@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const db = require("../../../db");
 const jwt = require("jsonwebtoken");
+
 exports.signupController = async (req, reply) => {
   try {
     const { email, username, password, user_type, upper_level_user } = req.body;
