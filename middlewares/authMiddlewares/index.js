@@ -11,7 +11,7 @@ exports.isLoggedIn = (req, reply, done) => {
       );
       if (loggedIn) {
         req.userId = loggedIn?.userId;
-        req.isSuperUser = loggedIn?.isSuperUser;
+        req.userType = loggedIn?.userType;
         return done();
       }
     }
