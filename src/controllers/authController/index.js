@@ -44,7 +44,7 @@ exports.loginController = async (request, reply) => {
         userId: user?.[0]?.id,
         email: user?.[0]?.email,
         username: user?.[0]?.username,
-        isSuperUser: user?.[0]?.user_type == 1,
+        userType: user?.[0]?.user_type,
       },
       process.env.JWT_SECRET_KEY,
       {

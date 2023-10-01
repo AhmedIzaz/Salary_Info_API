@@ -7,7 +7,7 @@ exports.createSalaryInfo = async (request, reply) => {
       .promise()
       .query(`SELECT upper_level_user FROM user WHERE id=?`, [id]);
     const isPermitted =
-      request?.isSuperUser ||
+      request?.userType === 1 ||
       userInfo?.[0]?.upper_level_user === request?.userId ||
       false;
     if (!isPermitted)
