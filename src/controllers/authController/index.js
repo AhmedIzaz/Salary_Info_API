@@ -7,7 +7,7 @@ exports.signupController = async (req, reply) => {
     const { email, username, password, user_type, upper_level_user } = req.body;
     const [userExist] = await db
       .promise()
-      .query(`SELECT * FROM user WHERE email='${email}'`);
+      .query(`SELECT * FROM user WHERE email=?`, [email]);
 
     if (userExist?.length > 0)
       return reply.code(409).send("User already exists");
@@ -15,11 +15,14 @@ exports.signupController = async (req, reply) => {
     await db
       .promise()
       .query(
-        `INSERT INTO user (email, username, password, user_type, upper_level_user) VALUES ('${email}', '${
-          username || null
-        }','${hashedPassword}',${user_type || null},${
-          upper_level_user || null
-        })`
+        `INSERT INTO user (email, username, password, user_type, upper_level_user) VALUES (?, ?, ?, ?, ?)`,
+        [
+          email,
+          username || null,
+          hashedPassword,
+          user_type || null,
+          upper_level_user || null,
+        ]
       );
     return reply.code(201).send("User created successfully");
   } catch (error) {
@@ -32,7 +35,7 @@ exports.loginController = async (request, reply) => {
     const { email, password } = request.body;
     const [user] = await db
       .promise()
-      .query(`SELECT * FROM user WHERE email='${email}' LIMIT 1`);
+      .query(`SELECT * FROM user WHERE email=? LIMIT 1`, [email]);
     if (user?.length <= 0) return reply.code(409).send("User dont exists");
     const passwordMatched = await bcrypt.compare(password, user?.[0]?.password);
     if (!passwordMatched) return reply.code(401).send("Unauthorized Access");

@@ -4,9 +4,9 @@ exports.managementController = async (request, reply) => {
   try {
     const [data] = await db
       .promise()
-      .query(
-        `SELECT * FROM user WHERE id='${request?.userId}' AND user_type=1`
-      );
+      .query(`SELECT * FROM user WHERE id=? AND user_type=1`, [
+        request?.userId,
+      ]);
     if (data?.length <= 0)
       return reply
         .status(404)
@@ -21,9 +21,9 @@ exports.supervisorAndAboveController = async (request, reply) => {
   try {
     const [data] = await db
       .promise()
-      .query(
-        `SELECT * FROM user WHERE id='${request?.userId}' AND user_type in (1, 2)`
-      );
+      .query(`SELECT * FROM user WHERE id= AND user_type in (1, 2)`, [
+        request?.userId,
+      ]);
     if (data?.length <= 0)
       return reply
         .status(404)
@@ -38,9 +38,9 @@ exports.teamLeadAndAboveController = async (request, reply) => {
   try {
     const [data] = await db
       .promise()
-      .query(
-        `SELECT * FROM user WHERE id='${request?.userId}' AND user_type in (1, 2, 3)`
-      );
+      .query(`SELECT * FROM user WHERE id=? AND user_type in (1, 2, 3)`, [
+        request?.userId,
+      ]);
     if (data?.length <= 0)
       return reply
         .status(404)
@@ -55,7 +55,7 @@ exports.everyOneController = async (request, reply) => {
   try {
     const [data] = await db
       .promise()
-      .query(`SELECT * FROM user WHERE id='${request?.userId}'`);
+      .query(`SELECT * FROM user WHERE id=?`, [request?.userId]);
     if (data?.length <= 0) return reply.status(404).send("Data Not Found");
     return reply.status(200).send(data?.[0]);
   } catch (error) {
