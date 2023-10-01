@@ -3,7 +3,7 @@ const db = require("../../../db");
 exports.createSalaryInfo = async (request, reply) => {
   try {
     const { id, amount } = request?.body;
-    const userInfo = await db
+    const [userInfo] = await db
       .promise()
       .query(`SELECT upper_level_user FROM user WHERE id=?`, [id]);
     const isPermitted =
@@ -15,13 +15,13 @@ exports.createSalaryInfo = async (request, reply) => {
         .status(403)
         .send("You are not allowed to assign salary for this user");
 
-    await db.promise().query(`DELETE FROM salary WHERE user_id=?`, [id]),
-      await db
-        .promise()
-        .query(`INSERT INTO salary (user_id, amount) value (?, ?);`, [
-          id,
-          amount,
-        ]);
+    await db.promise().query(`DELETE FROM salary WHERE user_id=?`, [id]);
+    await db
+      .promise()
+      .query(`INSERT INTO salary (user_id, amount) value (?, ?);`, [
+        id,
+        amount,
+      ]);
     return reply.status(200).send("Salary created successfully");
   } catch (err) {
     return reply.send(err?.message).status(500);
