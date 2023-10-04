@@ -55,12 +55,14 @@ exports.teamLeadAndAboveController = async (request, reply) => {
 
 exports.everyOneController = async (request, reply) => {
   try {
-    const [data] = await db
+     const [data] = await db
       .promise()
       .query(`SELECT * FROM user WHERE id=?`, [request?.userId]);
     if (data?.length <= 0) return reply.status(404).send("Data Not Found");
     return reply.status(200).send(data?.[0]);
+  
   } catch (error) {
     return reply.send(error?.message).status(500);
   }
 };
+

@@ -28,5 +28,11 @@ exports.loginReqRespValidator = {
     500: {
       type: "string",
     },
+    401:{
+      type: "string",
+    },
+    409:{
+      type: "string",
+    }
   },
 };
