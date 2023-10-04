@@ -1,6 +1,6 @@
 const authRoutes = require("./authRoutes");
 const userSpecificRoutes = require("./userSpecificRoutes");
-const salaryInformationRoutes = require("./salaryInformationRoutes")
+const salaryInformationRoutes = require("./salaryInformationRoutes");
 module.exports = (fastify, _, done) => {
   fastify.register(authRoutes, {
     prefix: "/auth",

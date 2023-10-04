@@ -1,8 +1,15 @@
 require("dotenv").config();
 const fastify = require("fastify");
 const mainRoute = require("./routes");
+const app = fastify({
+  ajv: {
+    customOptions: {
+      allErrors: true,
+    },
+    plugins: [require("ajv-errors")],
+  },
+});
 
-const app = fastify();
 const PORT = process.env.PORT || 5000;
 
 async function build() {
@@ -22,4 +29,3 @@ build().then((fullfilledApp) => {
     }
   );
 });
-

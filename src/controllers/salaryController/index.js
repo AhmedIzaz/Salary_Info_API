@@ -5,12 +5,11 @@ exports.createSalaryInfo = async (request, reply) => {
     const { id, amount } = request?.body;
     const [userInfo] = await db
       .promise()
-      .query(`SELECT upper_level_user FROM user WHERE id=?`, [id]);
-    const isPermitted =
-      request?.userType === 1 ||
-      userInfo?.[0]?.upper_level_user === request?.userId ||
-      false;
-    if (!isPermitted)
+      .query(`SELECT * FROM user WHERE id=?`, [id]);
+    if (!userInfo?.[0]?.id)
+      return reply.status(403).send("User not found with this id");
+
+    if (request?.userType !== 1)
       return reply
         .status(403)
         .send("You are not allowed to assign salary for this user");
@@ -77,5 +76,51 @@ exports.salaryInformationController = async (request, reply) => {
     return reply.send(payload).status(200);
   } catch (error) {
     return reply.send(error?.message).status(500);
+  }
+};
+
+exports.salaryCreateWithQueryParamsController = async (request, reply) => {
+  try {
+    const { userId, amount } =
+      request?.body?.fromData === "params" ? request?.params : request?.query;
+    const [userInfo] = await db
+      .promise()
+      .query(`SELECT * FROM user WHERE id=?`, [userId]);
+    if (userInfo.length < 0)
+      return reply.status(403).send("User not found with this id");
+
+    if (request?.userType !== 1)
+      return reply
+        .status(403)
+        .send("You are not allowed to assign salary for this user");
+
+    const [updated] = await db
+      .promise()
+      .query(`UPDATE salary SET amount=? WHERE user_id=?`, [amount, userId]);
+    if (updated?.affectedRows > 0)
+      return reply.status(200).send("Salary updated successfully");
+    await db
+      .promise()
+      .query(`INSERT INTO salary (user_id, amount) value (?, ?);`, [
+        userId,
+        amount,
+      ]);
+    return reply.status(200).send("Salary created successfully");
+  } catch (err) {
+    return reply.send(err?.message).status(500);
+  }
+};
+
+exports.salaryGetWithQueryParamsController = async (request, reply) => {
+  try {
+    const { userId } = { ...request?.params, ...request?.query };
+    const [salaryInfo] = await db
+      .promise()
+      .query("SELECT * FROM salary WHERE user_id=?", [userId]);
+    if (salaryInfo?.length <= 0)
+      return reply.status(403).send("Salary not found for this user");
+    return reply.status(200).send(salaryInfo?.[0]);
+  } catch (err) {
+    return reply.send(err?.message).status(500);
   }
 };
