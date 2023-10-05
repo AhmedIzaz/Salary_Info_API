@@ -4,10 +4,13 @@ const request = require("supertest");
 const {
   salaryGetWithParamsController,
   salaryGetWithQueryController,
+  salaryCreateWithQueryParamsController,
 } = require("../src/controllers/salaryController");
 const {
   salaryGetWithParamsValidator,
   salaryGetWithQueryValidator,
+  salaryCreateWithQueryValidator,
+  salaryCreateWithParamsValidator,
 } = require("../validators/salaryInformationValidators");
 
 beforeAll(async () => {
@@ -21,6 +24,20 @@ beforeAll(async () => {
     "/salaryInformation/get-with-query",
     { schema: salaryGetWithQueryValidator },
     salaryGetWithQueryController
+  );
+  fastify.post(
+    "/create-with-params/:userId/:amount",
+    {
+      schema: salaryCreateWithParamsValidator,
+    },
+    salaryCreateWithQueryParamsController
+  );
+  fastify.post(
+    "/create-with-query",
+    {
+      schema: salaryCreateWithQueryValidator,
+    },
+    salaryCreateWithQueryParamsController
   );
   await fastify.ready();
 });
@@ -86,3 +103,5 @@ describe("Salary Information with query parameters", () => {
     expect(response.status).toBe(400);
   });
 });
+
+
