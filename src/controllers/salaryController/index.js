@@ -111,16 +111,39 @@ exports.salaryCreateWithQueryParamsController = async (request, reply) => {
   }
 };
 
-exports.salaryGetWithQueryParamsController = async (request, reply) => {
+const getSalaryInfo = async (userId) => {
   try {
-    const { userId } = { ...request?.params, ...request?.query };
     const [salaryInfo] = await db
       .promise()
       .query("SELECT * FROM salary WHERE user_id=?", [userId]);
     if (salaryInfo?.length <= 0)
-      return reply.status(403).send("Salary not found for this user");
-    return reply.status(200).send(salaryInfo?.[0]);
-  } catch (err) {
-    return reply.send(err?.message).status(500);
+      throw new Error("Salary not found for this user");
+    return salaryInfo?.[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.salaryGetWithQueryController = async (request, reply) => {
+  const { userId } = request?.query;
+  try {
+    const salaryInfo = await getSalaryInfo(userId);
+    return reply.status(200).send(salaryInfo);
+  } catch (error) {
+    return reply
+      .status(500)
+      .send(error.message || "An error occurred while fetching salary info");
+  }
+};
+
+exports.salaryGetWithParamsController = async (request, reply) => {
+  const { userId } = request?.params;
+  try {
+    const salaryInfo = await getSalaryInfo(userId);
+    return reply.status(200).send(salaryInfo);
+  } catch (error) {
+    return reply
+      .status(500)
+      .send(error.message || "An error occurred while fetching salary info");
   }
 };

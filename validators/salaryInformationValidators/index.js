@@ -24,15 +24,9 @@ const salaryGetWithQueryParamsValidator = {
   properties: {
     userId: {
       type: "number",
-      errorMessage: { type: "User Id must be a number" },
     },
   },
   required: ["userId"],
-  errorMessage: {
-    required: {
-      userId: "User Id is required",
-    },
-  },
 };
 
 const salaryCreateWithQueryOrParamsValidator = {
@@ -54,13 +48,13 @@ const salaryCreateWithQueryOrParamsValidator = {
 };
 
 const salaryCreateWithQueryParamResValidator = {
+  200: {
+    type: "string",
+  },
   500: {
     type: "string",
   },
   403: {
-    type: "string",
-  },
-  200: {
     type: "string",
   },
 };

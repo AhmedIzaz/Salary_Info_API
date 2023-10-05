@@ -10,7 +10,8 @@ const {
   salaryInformationController,
   createSalaryInfo,
   salaryCreateWithQueryParamsController,
-  salaryGetWithQueryParamsController,
+  salaryGetWithQueryController,
+  salaryGetWithParamsController,
 } = require("../../controllers/salaryController");
 
 module.exports = (fastify, _, done) => {
@@ -32,11 +33,11 @@ module.exports = (fastify, _, done) => {
     salaryCreateWithQueryParamsController
   );
   fastify.get(
-    "/get-with-params/:userId/:amount",
+    "/get-with-params/:userId",
     {
       schema: salaryGetWithParamsValidator,
     },
-    salaryGetWithQueryParamsController
+    salaryGetWithParamsController
   );
   fastify.post(
     "/create-with-query",
@@ -50,7 +51,7 @@ module.exports = (fastify, _, done) => {
     {
       schema: salaryGetWithQueryValidator,
     },
-    salaryGetWithQueryParamsController
+    salaryGetWithQueryController
   );
   done();
 };

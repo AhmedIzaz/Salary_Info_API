@@ -10,8 +10,23 @@ const db = mysql.createPool({
 });
 
 db.getConnection((error, connection) => {
-  if (error) console.log("error happend during getConnection");
+  if (error) {
+    if (error.code === "PROTOCOL_CONNECTION_LOST") {
+      console.log("Database connection was closed.");
+    } else if (error.code === "ER_CON_COUNT_ERROR") {
+      console.log("Database has too many connections.");
+    } else if (error.code === "ECONNREFUSED") {
+      console.log("Database connection was refused.");
+    } else if (error.code == "ER_NOT_SUPPORTED_AUTH_MODE") {
+      console.log(
+        "MySQL client does not support authentication protocol requested by server."
+      );
+    } else {
+      console.log("Connecting database: " + error.code);
+    }
+  }
   if (connection) connection.release();
+  return;
 });
 
 module.exports = db;
